@@ -9,10 +9,11 @@
             max-width: 1420px;
             margin-right: auto;
             margin-left: auto;
+            padding: 2rem;
         }
 
         img {
-            width: 150px;
+            width: 100%;
         }
 
         section {
@@ -20,71 +21,103 @@
             grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
         }
 
+        button {
+            border-radius: 0%;
+            border: 0;
+            color: silver;
+            padding: 1rem;
+            font-size: 1rem;
+            text-transform: capitalize;
+            transition: .5s;
+            transform: scale(1);
+        }
+
+        button:hover {
+            color: black;
+            transition: .5s;
+            transform: scale(1.05);
+        }
+
         article {
 
             font-family: monospace;
             text-align: center;
-            border: solid black 2px;
+            border: solid silver 2px;
             margin: 10px;
             padding: 10px;
-            background: #c72944;
+            background: white;
 
 
+        }
+
+        h1 {
+            text-align: center;
+            text-transform: uppercase;
         }
 
         a {
             text-decoration: none;
-            color: darkred;
+            color: black;
             font-size: 1rem;
 
         }
 
-        .valgt {
-            background-color: red;
+        nav {
+            text-align: center;
+            border-top: 1px silver solid;
+            border-bottom: 1px silver solid;
+            padding: 1rem;
+            margin-bottom: 3rem;
+
         }
+
+        .valgt {
+            color: black;
+        }
+
     </style>
 </head>
 
 <body>
-    <h1>Personer</h1>
+    <h1>Babushka</h1>
     <nav>
-        <button data-køn="alle" class="valgt">Alle</button>
-        <button data-køn="forret">forret</button>
-        <button data-køn="hovedret">hovedret</button>
-        <button data-køn="dessert">dessert</button>
-        <button data-køn="drikkevare">dessert</button>
-        <button data-køn="sideorders">sideorders</button>
+        <button data-ret="alle" class="valgt">Alle</button>
+        <button data-ret="forretter">forret</button>
+        <button data-ret="hovedretter">hovedret</button>
+        <button data-ret="desserter">dessert</button>
+        <button data-ret="drikkevarer">drikkevare</button>
+        <button data-ret="sideorders">sideorders</button>
     </nav>
-    <section id="person-liste"></section>
+    <section id="menukort"></section>
 
     <template>
-        <article class="person">
-            <img src="" alt="" class="profil-billede">
+        <article class="menu">
+            <img src="" alt="" class="ret-billede">
             <h2 class="navn"></h2>
             <p class="beskrivelse-kort"></p>
             <p class="pris"></p>
-            <a href=""></a>
         </article>
     </template>
 
-    <section id="person-liste"></section>
-
     <script>
         document.addEventListener("DOMContentLoaded", start);
-        const url = `https://spreadsheets.google.com/feeds/list/17Dd7DvkPaFamNUdUKlrFgnH6POvBJXac7qyiS6zNRw0/od6/public/values?alt=json`;
-        let personer;
+
+
+        const sheetID = "17Dd7DvkPaFamNUdUKlrFgnH6POvBJXac7qyiS6zNRw0";
+        const url = `https://spreadsheets.google.com/feeds/list/${sheetID}/od6/public/values?alt=json`;
+        let retter;
         let filter = "alle";
 
         //Første funktion der kaldes efter DOM er loaded
         function start() {
             const filterKnapper = document.querySelectorAll("button");
-            filterKnapper.forEach(knap => knap.addEventListener("click", filtrerPersoner));
+            filterKnapper.forEach(knap => knap.addEventListener("click", filtrerRetter));
             loadData();
         }
 
         //En funktion der filtrerer personerne (json)
-        function filtrerPersoner() {
-            filter = this.dataset.køn; //Sæt variable "filter" til aktuel værdi
+        function filtrerRetter() {
+            filter = this.dataset.ret; //Sæt variable "filter" til aktuel værdi
             document.querySelector(".valgt").classList.remove("valgt"); // Fjern den valgte klasse på knappen
             this.classList.add("valgt"); //Marker den nye knap
             vis(); //Kald funktionen "vis" igen med nyt filter
@@ -94,26 +127,30 @@
         //Funktion der henter data fra Google Sheet (via url)
         async function loadData() {
             const response = await fetch(url);
-            personer = await response.json();
+            retter = await response.json();
             vis();
         }
 
         //Funktion der viser personer i liste view
         function vis() {
             const skabelon = document.querySelector("template").content; // Select indhold af html-skabelonen (article)
-            const dest = document.querySelector("#person-liste"); // Container til artikler
+            const dest = document.querySelector("#menukort"); // Container til artikler
             dest.textContent = ""; //Slet det der står i filter
 
-            personer.feed.entry.forEach(person => { //Her looper vi igennem json (personer)
-                if (person.gsx$køn.$t == filter || filter == "alle") { // tjek hvilket køn personen har og sammenling med filter
+            retter.feed.entry.forEach(ret => { //Her looper vi igennem json (personer)
+                if (ret.gsx$kategori.$t == filter || filter == "alle") { // tjek hvilket køn personen har og sammenling med filter
 
                     const klon = skabelon.cloneNode(true);
-                    klon.querySelector(".navn").textContent = person.gsx$navn.$t;
-                    klon.querySelector(".navn").textContent += " " + person.gsx$hold.$t;
-                    klon.querySelector(".profil-billede").src = person.gsx$billede.$t;
+                    klon.querySelector(".navn").textContent = ret.gsx$navn.$t;
+                    klon.querySelector(".beskrivelse-kort").textContent += " " + ret.gsx$kort.$t;
+                    klon.querySelector(".ret-billede").src = "/imgs/small/" + ret.gsx$billede.$t + "-sm.jpg";
+                    klon.querySelector(".pris").textContent += ret.gsx$pris.$t + " kr.";
                     dest.appendChild(klon);
                 }
             })
         }
+
     </script>
-</body></html>
+</body>
+
+</html>
