@@ -103,7 +103,6 @@
             padding: 4rem;
             background: white;
         }
-
     </style>
 </head>
 
@@ -184,7 +183,7 @@
                     const klon = skabelon.cloneNode(true);
                     klon.querySelector(".navn").textContent = ret.gsx$navn.$t;
                     klon.querySelector(".beskrivelse-kort").textContent += " " + ret.gsx$kort.$t;
-                    klon.querySelector(".ret-billede").src = "/imgs/small/" + ret.gsx$billede.$t + "-sm.jpg";
+                    klon.querySelector(".ret-billede").src = "imgs/small/" + ret.gsx$billede.$t + "-sm.jpg";
                     klon.querySelector(".pris").textContent += ret.gsx$pris.$t + " kr.";
 
                     klon.querySelector(".menu").addEventListener("click", () => {
@@ -199,7 +198,7 @@
         function visDetalje(ret) {
             console.log(ret);
             document.querySelector("#detalje").style.display = "block";
-            document.querySelector("#detalje img").src = `/imgs/large/${ret.gsx$billede.$t}.jpg`;
+            document.querySelector("#detalje img").src = `imgs/large/${ret.gsx$billede.$t}.jpg`;
             document.querySelector("#detalje img").alt = `Billede af ${ret.gsx$billede}`;
             document.querySelector("#detalje .beskrivelse-lang").textContent = " " + ret.gsx$lang.$t;
             document.querySelector("#detalje .pris").textContent = ret.gsx$pris.$t + " kr.";
@@ -212,8 +211,5 @@
             document.querySelector("#detalje").style.display = "none";
 
         }
-
     </script>
-</body>
-
-</html>
+</body></html>
