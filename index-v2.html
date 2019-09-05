@@ -57,7 +57,6 @@
         h1 {
             text-align: center;
             text-transform: uppercase;
-            font-size: 4rem;
         }
 
         a {
@@ -80,7 +79,6 @@
             color: black;
         }
 
-        /*
         #detalje {
             position: absolute;
             top: 0;
@@ -105,13 +103,12 @@
             padding: 4rem;
             background: white;
         }
-*/
+
     </style>
 </head>
 
 <body>
     <h1>Babushka</h1>
-
     <nav>
         <button data-ret="alle" class="valgt">Alle</button>
         <button data-ret="forretter">forret</button>
@@ -122,7 +119,6 @@
     </nav>
     <section id="menukort"></section>
 
-    <!--
     <section id="detalje" class="">
         <article class="menu">
             <button class="luk">✖️</button>
@@ -132,7 +128,6 @@
             <p class="pris"></p>
         </article>
     </section>
--->
 
 
     <template>
@@ -150,14 +145,14 @@
 
         const sheetID = "17Dd7DvkPaFamNUdUKlrFgnH6POvBJXac7qyiS6zNRw0";
         const url = `https://spreadsheets.google.com/feeds/list/${sheetID}/od6/public/values?alt=json`;
-        let retter = [];
+        let retter;
         let filter = "alle";
 
         //Første funktion der kaldes efter DOM er loaded
         function start() {
             const filterKnapper = document.querySelectorAll("nav button");
             filterKnapper.forEach(knap => knap.addEventListener("click", filtrerRetter));
-
+            skjulDetalje()
             loadData();
         }
 
@@ -189,36 +184,36 @@
                     const klon = skabelon.cloneNode(true);
                     klon.querySelector(".navn").textContent = ret.gsx$navn.$t;
                     klon.querySelector(".beskrivelse-kort").textContent += " " + ret.gsx$kort.$t;
-                    klon.querySelector(".ret-billede").src = `imgs/small/${ret.gsx$billede.$t}-sm.jpg`;
+                    klon.querySelector(".ret-billede").src = "/imgs/small/" + ret.gsx$billede.$t + "-sm.jpg";
                     klon.querySelector(".pris").textContent += ret.gsx$pris.$t + " kr.";
 
-
                     klon.querySelector(".menu").addEventListener("click", () => {
-                        // visDetalje(person);
-                        location.href = `menu-detalje.html?retID=${ret.gsx$id.$t}`;
+                        visDetalje(ret);
                     });
-
 
                     dest.appendChild(klon);
                 }
             })
         }
-        //
-        //        function visDetalje(ret) {
-        //            console.log(ret);
-        //            document.querySelector("#detalje").style.display = "block";
-        //            document.querySelector("#detalje img").src = `/imgs/large/${ret.gsx$billede.$t}.jpg`;
-        //            document.querySelector("#detalje img").alt = `Billede af ${ret.gsx$billede}`;
-        //            document.querySelector("#detalje .beskrivelse-lang").textContent = " " + ret.gsx$lang.$t;
-        //            document.querySelector("#detalje .pris").textContent = ret.gsx$pris.$t + " kr.";
-        //
-        //            document.querySelector("#detalje .luk").addEventListener("click", skjulDetalje);
-        //        }
-        //
-        //        function skjulDetalje() {
-        //            console.log(skjulDetalje);
-        //            document.querySelector("#detalje").style.display = "none";
-        //
-        //        }
+
+        function visDetalje(ret) {
+            console.log(ret);
+            document.querySelector("#detalje").style.display = "block";
+            document.querySelector("#detalje img").src = `/imgs/large/${ret.gsx$billede.$t}.jpg`;
+            document.querySelector("#detalje img").alt = `Billede af ${ret.gsx$billede}`;
+            document.querySelector("#detalje .beskrivelse-lang").textContent = " " + ret.gsx$lang.$t;
+            document.querySelector("#detalje .pris").textContent = ret.gsx$pris.$t + " kr.";
+
+            document.querySelector("#detalje .luk").addEventListener("click", skjulDetalje);
+        }
+
+        function skjulDetalje() {
+            console.log(skjulDetalje);
+            document.querySelector("#detalje").style.display = "none";
+
+        }
+
     </script>
-</body></html>
+</body>
+
+</html>
